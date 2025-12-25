@@ -189,7 +189,23 @@ index.html                           100%[======================================
 
 2025-12-25 15:04:26 (113 MB/s) - 'index.html' saved [615/615]
 
+6. Change the service type so the Pods can be reached outside the cluster.
+7. Run a `wget` command against the service outside the cluster.
 
+controlplane:~$ cat svc.yaml 
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp
+spec:
+  selector:
+    app: myapp
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30051
 
 controlplane:~$ kubectl apply -f svc.yaml
 service/myapp configured
@@ -204,6 +220,58 @@ NAME                     READY   STATUS      RESTARTS   AGE   IP            NODE
 myapp-5b89d77f84-g7vm2   1/1     Running     0          29m   192.168.1.5   node01   <none>           <none>
 myapp-5b89d77f84-txsvc   1/1     Running     0          29m   192.168.1.6   node01   <none>           <none>
 temp-po                  0/1     Completed   0          20m   192.168.1.8   node01   <none>           <none>
+controlplane:~$ kubectl get node -o wide
+NAME           STATUS   ROLES           AGE     VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION     CONTAINER-RUNTIME
+controlplane   Ready    control-plane   6d21h   v1.34.3   172.30.1.2    <none>        Ubuntu 24.04.3 LTS   6.8.0-90-generic   containerd://1.7.28
+node01         Ready    <none>          6d21h   v1.34.3   172.30.2.2    <none>        Ubuntu 24.04.3 LTS   6.8.0-90-generic   containerd://1.7.28
+controlplane:~$ curl http://172.30.2.2:30051 
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+
+controlplane:~$ wget http://172.30.1.2:30051
+--2025-12-25 15:30:51--  http://172.30.1.2:30051/
+Connecting to 172.30.1.2:30051... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 615 [text/html]
+Saving to: 'index.html.1'
+
+index.html.1                         100%[=====================================================================>]     615  --.-KB/s    in 0s      
+
+2025-12-25 15:30:51 (146 MB/s) - 'index.html.1' saved [615/615]
+
+controlplane:~$ wget http://172.30.2.2:30051
+--2025-12-25 15:31:14--  http://172.30.2.2:30051/
+Connecting to 172.30.2.2:30051... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 615 [text/html]
+Saving to: 'index.html.2'
+
+index.html.2                         100%[=====================================================================>]     615  --.-KB/s    in 0s      
+
+2025-12-25 15:31:14 (80.5 MB/s) - 'index.html.2' saved [615/615]
+
+
 
 
 ```
