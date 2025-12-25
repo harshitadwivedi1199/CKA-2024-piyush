@@ -50,6 +50,32 @@ spec:
     matchLabels:
       env: demo
 ```
+Answer -
+
+``` YAML
+apiVersion: apps/v1
+kind:  Deployment
+metadata:
+  name: nginx-deploy
+  labels:
+    env: demo
+spec:
+  template:
+    metadata:
+      labels:
+        env: demo
+      name: nginx
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        ports:
+        - containerPort: 80
+  replicas: 3
+  selector:
+    matchLabels:
+      env: demo
+```
 
 2. Apply the below YAML and fix the issue with it
 
