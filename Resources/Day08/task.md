@@ -12,6 +12,30 @@ In this exercise, you will create a Deployment with multiple replicas. After ins
 - Update the replicas to 4 from the YAML
 - Update the replicas to 6 from the command line
 
+```YAML
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: frontend-nginx
+  labels:
+    app: guestbook
+    tier: frontend
+spec:
+  # modify replicas according to your case
+  replicas: 3
+  selector:
+    matchLabels:
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        tier: frontend
+    spec:
+      containers:
+      - name: nginx-rs
+        image: nginx:latest
+```
+
 ## Deployment
 1. Create a Deployment named `nginx` with 3 replicas. The Pods should use the `nginx:1.23.0` image and the name `nginx`. The Deployment uses the label `tier=backend`. The Pod template should use the label `app=v1`.
 2. List the Deployment and ensure the correct number of replicas is running.
