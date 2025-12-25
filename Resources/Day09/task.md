@@ -275,7 +275,24 @@ index.html.2                         100%[======================================
 2025-12-25 15:31:14 (80.5 MB/s) - 'index.html.2' saved [615/615]
 
 
+8. Can you expose Pods as a Service without a Deployment?
 
+Yes.
+A Service selects Pods by labels, not by Deployment. As long as Pods exist with matching labels, they can be exposed—no Deployment required.
+
+9. When to use each Service type?
+
+ClusterIP: Internal-only access (default).
+Use for in-cluster communication.
+
+NodePort: Basic external access via NodeIP:Port.
+Use for labs, testing, on-prem.
+
+LoadBalancer: Cloud-managed external access.
+Use for production external traffic.
+
+ExternalName: DNS alias to an external service.
+Use to access external APIs via Kubernetes DNS.
 
 ```
 
