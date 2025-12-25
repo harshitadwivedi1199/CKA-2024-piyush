@@ -192,6 +192,9 @@ index.html                           100%[======================================
 6. Change the service type so the Pods can be reached outside the cluster.
 7. Run a `wget` command against the service outside the cluster.
 
+Nodeport traffic flow - 
+Client → <NodeIP>:<NodePort> → Service → Pod
+
 controlplane:~$ cat svc.yaml 
 apiVersion: v1
 kind: Service
