@@ -89,7 +89,12 @@ Events:
   Normal  ScalingReplicaSet  90s    deployment-controller  Scaled down replica set nginx-59f6558cd6 from 2 to 1
   Normal  ScalingReplicaSet  90s    deployment-controller  Scaled up replica set nginx-d8c469fcd from 2 to 3
   Normal  ScalingReplicaSet  88s    deployment-controller  Scaled down replica set nginx-59f6558cd6 from 1 to 0
-controlplane:~$
+controlplane:~$ kubectl rollout history deployment nginx
+deployment.apps/nginx 
+REVISION  CHANGE-CAUSE
+1         <none>
+2         Pick up patch version
+
 
 ```
 
