@@ -43,7 +43,32 @@ spec:
 
   
 - Undertand the cron syntax and create a cronjob object in kubernetes that prints "40daysofkubernetes" after every 5 minutes and use busybox image
+```
+controlplane:~$ kubectl get cronjob 
+NAME    SCHEDULE      TIMEZONE   SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+hello   */5 * * * *   <none>     False     0        <none>          7s
+controlplane:~$ cat cronjob.yaml 
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hello
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: hello
+            image: busybox:1.28
+            imagePullPolicy: IfNotPresent
+            command:
+            - /bin/sh
+            - -c
+            - date; echo 40daysofkubernetes
+          restartPolicy: OnFailure
 
+```
 3. **Share your learnings**: Document your key takeaways and insights in a blog post and social media update
 4. **Make it public**: Share what you learn publicly on LinkedIn or Twitter.
    - **Tag us and use the hashtag**: Include the following in your post:
