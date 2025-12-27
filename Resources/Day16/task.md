@@ -129,7 +129,27 @@ Events:
   Normal   Started    3s (x3 over 19s)  kubelet            Started container memory-demo-2-ctr
   Warning  BackOff    3s (x3 over 17s)  kubelet            Back-off restarting failed container memory-demo-2-ctr in pod memory-demo-2_mem-example(e1c3c702-2055-4e47-985e-2ee142b177c6)
   Normal   Pulled     3s                kubelet            Successfully pulled image "polinux/stress" in 226ms (226ms including waiting). Image size: 4041495 bytes.
-controlplane:~$ 
+controlplane:~$
+
+controlplane:~$ cat memory-pod1.yaml 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: memory-demo
+  namespace: mem-example
+spec:
+  containers:
+  - name: memory-demo-ctr
+    image: polinux/stress
+    resources:
+      requests:
+        memory: "100Mi"
+      limits:
+        memory: "200Mi"
+    command: ["stress"]
+    args: ["--vm", "1", "--vm-bytes", "150M", "--vm-hang", "1"]
+
+
 
 ```
 
