@@ -96,6 +96,18 @@ controlplane:~$ kubectl get po -o wide
 NAME   READY   STATUS    RESTARTS   AGE     IP            NODE     NOMINATED NODE   READINESS GATES
 pod1   1/1     Running   0          2m13s   192.168.1.4   node01   <none>           <none>
 
+controlplane:~$ kubectl label node controlplane disktype=""
+node/controlplane labeled
+
+controlplane:~$ kubectl get node node01 --show-labels | grep disktype       
+node01   Ready    <none>   8d    v1.34.3   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,disktype=ssd,kubernetes.io/arch=amd64,kubernetes.io/hostname=node01,kubernetes.io/os=linux
+controlplane:~$ kubectl get node controlplane --show-labels | grep disktype
+controlplane   Ready    control-plane   8d    v1.34.3   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,disktype=,kubernetes.io/arch=amd64,kubernetes.io/hostname=controlplane,kubernetes.io/os=linux,node-role.kubernetes.io/control-plane=,node.kubernetes.io/exclude-from-external-load-balancers=
+
+controlplane:~$ kubectl get po  -o wide
+NAME      READY   STATUS    RESTARTS   AGE   IP            NODE           NOMINATED NODE   READINESS GATES
+pod1      1/1     Running   0          23m   192.168.1.4   node01         <none>           <none>
+redis-3   1/1     Running   0          24s   192.168.0.4   controlplane   <none>           <none>
 
 ```
 
