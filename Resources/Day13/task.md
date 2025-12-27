@@ -8,7 +8,7 @@ Also, could you do the port binding at the cluster level if you are using KIND? 
 
 ### Task details
 - Create a pod and try to schedule it manually without the scheduler.
-  ```
+```
 controlplane:~$ cat pod1.yaml 
 apiVersion: v1
 kind: Pod
@@ -25,10 +25,13 @@ NAME                               READY   STATUS      RESTARTS   AGE     IP    
 manual-node-nginx                  1/1     Running     0          10s     192.168.0.4   controlplane   <none>           <none>
 node-debugger-controlplane-27d4s   0/1     Completed   0          8m45s   172.30.1.2    controlplane   <none>           <none>
 
-  ```
+```
 - Login to the control plane node and go to the directory of default static pod manifests and try to restart the control plane components
 - Create 3 pods with the name as pod1, pod2 and pod3 based on the nginx image and use labels as env:test, env:dev and env:prod for each of these pods respectively.
 - Then using the kubectl commands, filter the pods that have labels dev and prod.
+```
+
+```
 
 3. **Share your learnings**: Document your key takeaways and insights in a blog post and social media update
 4. **Make it public**: Share what you learn publicly on LinkedIn or Twitter.
