@@ -68,6 +68,18 @@ spec:
             - date; echo 40daysofkubernetes
           restartPolicy: OnFailure
 
+controlplane:~$ kubectl get jobs
+NAME             STATUS     COMPLETIONS   DURATION   AGE
+hello-29447045   Complete   1/1           4s         42s
+
+NAME                   READY   STATUS      RESTARTS   AGE
+hello-29447045-hwnzp   0/1     Completed   0          62s
+nginx-ds-pxbrp         1/1     Running     0          13m
+nginx-ds-xfnjc         1/1     Running     0          13m
+controlplane:~$ kubectl logs hello-29447045-hwnzp
+Sat Dec 27 08:05:01 UTC 2025
+40daysofkubernetes
+
 ```
 3. **Share your learnings**: Document your key takeaways and insights in a blog post and social media update
 4. **Make it public**: Share what you learn publicly on LinkedIn or Twitter.
