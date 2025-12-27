@@ -8,6 +8,40 @@ Also, could you do the port binding at the cluster level if you are using KIND? 
 
 ### Task details
 - Create a Daemonset as per the demo shown in the video.
+
+  ```
+controlplane:~$ kubectl get po -o wide 
+NAME             READY   STATUS    RESTARTS   AGE   IP            NODE           NOMINATED NODE   READINESS GATES
+nginx-ds-pxbrp   1/1     Running   0          25s   192.168.1.4   node01         <none>           <none>
+nginx-ds-xfnjc   1/1     Running   0          25s   192.168.0.4   controlplane   <none>           <none>
+controlplane:~$ ls   
+ds.yaml  filesystem
+controlplane:~$ cat ds.yaml 
+apiVersion: apps/v1
+kind:  DaemonSet
+metadata:
+  name: nginx-ds
+  labels:
+    env: demo
+spec:
+  template:
+    metadata:
+      labels:
+        env: demo
+      name: nginx
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        ports:
+        - containerPort: 80
+  selector:
+    matchLabels:
+      env: demo
+
+  ```
+
+  
 - Undertand the cron syntax and create a cronjob object in kubernetes that prints "40daysofkubernetes" after every 5 minutes and use busybox image
 
 3. **Share your learnings**: Document your key takeaways and insights in a blog post and social media update
