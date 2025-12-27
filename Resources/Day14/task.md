@@ -16,6 +16,55 @@ Also, could you do the port binding at the cluster level if you are using KIND? 
 - Create a new pod with the image redis , it should be scheduled on control plane node
 - Add the taint back on the control plane node(the one that was removed)
 
+```
+controlplane:~$ kubectl describe node controlplane | grep Taints
+Taints:             gpu=false:NoSchedule
+controlplane:~$ kubectl describe node node01 | grep Taints
+Taints:             gpu=true:NoSchedule
+
+controlplane:~$ kubectl get po -o wide
+NAME                               READY   STATUS      RESTARTS   AGE   IP            NODE           NOMINATED NODE   READINESS GATES
+nginx-pod                          1/1     Running     0          4s    192.168.0.6   controlplane   <none>           <none>
+node-debugger-controlplane-27d4s   0/1     Completed   0          43m   172.30.1.2    controlplane   <none>           <none>
+controlplane:~$ kubectl get po -o wide
+NAME                               READY   STATUS      RESTARTS   AGE    IP            NODE           NOMINATED NODE   READINESS GATES
+nginx-pod                          1/1     Running     0          4s     192.168.0.8   controlplane   <none>           <none>
+node-debugger-controlplane-27d4s   0/1     Completed   0          51m    172.30.1.2    controlplane   <none>           <none>
+redis-pod                          1/1     Running     0          2m3s   192.168.1.8   node01         <none>           <none>
+
+controlplane:~$ cat pod-nginx.yaml 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+  namespace: default
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+  tolerations:
+  - key: "gpu"
+    operator: "Equal"
+    value: "false"
+    effect: "NoSchedule"
+controlplane:~$ cat pod1.yaml 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: redis-pod
+  namespace: default
+spec:
+  containers:
+  - name: redis
+    image: redis
+  tolerations:
+  - key: "gpu"
+    operator: "Equal"
+    value: "true"
+    effect: "NoSchedule"
+controlplane:~$ 
+```
+
 3. **Share your learnings**: Document your key takeaways and insights in a blog post and social media update
 4. **Make it public**: Share what you learn publicly on LinkedIn or Twitter.
    - **Tag us and use the hashtag**: Include the following in your post:
