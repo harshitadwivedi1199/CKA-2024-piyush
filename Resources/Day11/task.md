@@ -79,6 +79,50 @@ spec:
 
 ```
 
+### sidecar pod example
+
+```
+controlplane:~$ kubectl get po 
+NAME              READY   STATUS    RESTARTS   AGE
+sidecar-example   2/2     Running   0          5s
+test-pod          1/1     Running   0          19m
+controlplane:~$ kubectl logs sidecar-example
+Defaulted container "app" out of: app, log-sidecar
+controlplane:~$ kubectl logs sidecar-example -c app
+controlplane:~$ kubectl logs sidecar-example -c log-sidecar
+hello
+hello
+hello
+hello
+hello
+hello
+controlplane:~$ cat sidecar-pod.yaml 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sidecar-example
+spec:
+  volumes:
+  - name: shared-logs
+    emptyDir: {}
+
+  containers:
+  - name: app
+    image: busybox
+    command: ["sh", "-c", "while true; do echo hello >> /var/log/app.log; sleep 5; done"]
+    volumeMounts:
+    - name: shared-logs
+      mountPath: /var/log
+
+  - name: log-sidecar
+    image: busybox
+    command: ["sh", "-c", "tail -f /var/log/app.log"]
+    volumeMounts:
+    - name: shared-logs
+      mountPath: /var/log
+
+```
+
 
 3. **Share your learnings**: Document your key takeaways and insights in a blog post and social media update
 4. **Make it public**: Share what you learn publicly on LinkedIn or Twitter.
