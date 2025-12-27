@@ -62,6 +62,42 @@ spec:
 
 >Note: This pod specification defines a toleration for the "gpu" taint with the effect "NoSchedule." This allows the pod to be scheduled on tainted nodes.
 
+## What happens depends on the taint effect:
+
+Taint Effect     | Impact on existing Pods
+
+NoSchedule       > Existing Pods stay (no eviction)
+
+PreferNoSchedule > Existing Pods stay, scheduler avoids new Pods
+
+NoExecute	       > Existing Pods without toleration are evicted
+
+
+## Taint effects explained
+
+### NoSchedule
+kubectl taint nodes node1 key=value:NoSchedule
+
+New Pods without toleration → ❌ blocked
+
+Existing Pods → ✅ continue running
+
+### PreferNoSchedule
+kubectl taint nodes node1 key=value:PreferNoSchedule
+
+Soft restriction
+
+Scheduler tries to avoid the node but may still place Pods if needed
+
+### NoExecute
+kubectl taint nodes node1 key=value:NoExecute
+
+New Pods without toleration → ❌ blocked
+
+Existing Pods without toleration → ❌ evicted
+
+Pods with toleration can stay (optionally with time limit)
+
 ### Labels vs Taints/Tolerations
 
 Labels group nodes based on size, type,env, etc. Unlike taints, labels don't directly affect scheduling but are useful for organizing resources.
