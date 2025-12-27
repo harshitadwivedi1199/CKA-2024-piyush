@@ -109,6 +109,33 @@ NAME      READY   STATUS    RESTARTS   AGE   IP            NODE           NOMINA
 pod1      1/1     Running   0          23m   192.168.1.4   node01         <none>           <none>
 redis-3   1/1     Running   0          24s   192.168.0.4   controlplane   <none>           <none>
 
+controlplane:~$ cat redis.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: redis
+  name: redis-3
+spec:
+  containers:
+  - image: redis
+    name: redis
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+              - key: disktype
+                operator: Exists
+              - key: disktype
+                operator: NotIn
+                values:
+                 - ssd
+
 ```
 
 3. **Share your learnings**: Document your key takeaways and insights in a blog post and social media update
