@@ -4,6 +4,33 @@
 
 [![Day11/40 - Multi Container Pod Kubernetes - Sidecar vs Init Container](https://img.youtube.com/vi/yRiFq1ykBxc/sddefault.jpg)](https://youtu.be/yRiFq1ykBxc)
 
+```
+init Container → runs before the app, does setup
+Example: download a model before the app starts
+
+initContainers:
+- name: download-model
+  image: busybox
+  command: ["sh", "-c", "wget model-url -O /models/model.bin"]
+```
+
+
+```
+Sidecar Container → runs with the app, provides support
+Example: collect logs while the app is running
+
+containers:
+- name: app
+  image: myapp
+- name: log-sidecar
+  image: fluent/fluent-bit
+
+```
+```
+👉 Init = prepare before start
+👉 Sidecar = support during runtime
+
+```
 
 ## Sample YAML used in the demo
 
