@@ -9,7 +9,7 @@ Also, could you do the port binding at the cluster level if you are using KIND? 
 ### Task details
 - Create a Daemonset as per the demo shown in the video.
 
-  ```
+```
 controlplane:~$ kubectl get po -o wide 
 NAME             READY   STATUS    RESTARTS   AGE   IP            NODE           NOMINATED NODE   READINESS GATES
 nginx-ds-pxbrp   1/1     Running   0          25s   192.168.1.4   node01         <none>           <none>
@@ -39,7 +39,7 @@ spec:
     matchLabels:
       env: demo
 
-  ```
+```
 
   
 - Undertand the cron syntax and create a cronjob object in kubernetes that prints "40daysofkubernetes" after every 5 minutes and use busybox image
