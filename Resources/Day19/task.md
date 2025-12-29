@@ -302,6 +302,31 @@ produser#
 Y4nys7f11# 
 # exit
 
+
+##### configmap practical using demo manifest files
+
+controlplane:~$ vi cm.yaml
+controlplane:~$ kubectl apply -f cm.yaml 
+configmap/app-cm created
+controlplane:~$ vi pod-cm.yaml
+controlplane:~$ kubectl apply -f pod-cm.yaml 
+pod/myapp-pod created
+controlplane:~$ kubectl exec -it myapp-pod -- printenv
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=myapp-pod
+FIRSTNAME=piyush
+KUBERNETES_PORT_443_TCP_ADDR=10.96.0.1
+KUBERNETES_SERVICE_HOST=10.96.0.1
+KUBERNETES_SERVICE_PORT=443
+KUBERNETES_SERVICE_PORT_HTTPS=443
+KUBERNETES_PORT=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP_PROTO=tcp
+KUBERNETES_PORT_443_TCP_PORT=443
+TERM=xterm
+HOME=/root
+
+
 ```
 
 2. **Share your learnings**: Document your key takeaways and insights in a blog post and social media update
