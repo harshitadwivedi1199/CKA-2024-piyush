@@ -92,7 +92,39 @@ csinodes                                         storage.k8s.io/v1              
 storageclasses                      sc           storage.k8s.io/v1                 false        StorageClass
 volumeattachments                                storage.k8s.io/v1                 false        VolumeAttachment
 volumeattributesclasses             vac          storage.k8s.io/v1                 false        VolumeAttributesClass
-controlplane:~$ 
+controlplane:~$
+
+controlplane:~$ kubectl get pods -n kube-system
+Error from server (Forbidden): pods is forbidden: User "adam" cannot list resource "pods" in API group "" in the namespace "kube-system"
+controlplane:~$ kubectl auth can-i list nodes --as adam
+Error from server (Forbidden): users "adam" is forbidden: User "adam" cannot impersonate resource "users" in API group "" at the cluster scope
+controlplane:~$ kubectl create clusterrole node-reader \
+  --verb=get,list,watch \
+  --resource=nodes
+Error from server (Forbidden): clusterroles.rbac.authorization.k8s.io is forbidden: User "adam" cannot create resource "clusterroles" in API group "rbac.authorization.k8s.io" at the cluster scope
+controlplane:~$ kubectl config get-contexts
+CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
+*         adam-context                  kubernetes   adam               default
+          kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   
+controlplane:~$ kubectl config use-context  kubernetes-admin@kubernetes 
+Switched to context "kubernetes-admin@kubernetes".
+controlplane:~$ kubectl create clusterrole node-reader   --verb=get,list,watch   --resource=nodes
+clusterrole.rbac.authorization.k8s.io/node-reader created
+controlplane:~$ kubectl create clusterrolebinding adam-node-reader \
+  --clusterrole=node-reader \
+  --user=adam
+clusterrolebinding.rbac.authorization.k8s.io/adam-node-reader created
+controlplane:~$ kubectl auth can-i list nodes --as adam
+Warning: resource 'nodes' is not namespace scoped
+
+yes
+controlplane:~$ kubectl config use-context adam-context
+Switched to context "adam-context".
+controlplane:~$ kubectl get node
+NAME           STATUS   ROLES           AGE   VERSION
+controlplane   Ready    control-plane   11d   v1.34.3
+node01         Ready    <none>          11d   v1.34.3
+
 ```
 
 2. **Share your learnings**: Document your key takeaways and insights in a blog post and social media update
