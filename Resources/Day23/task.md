@@ -80,6 +80,27 @@ controlplane:~$ kubectl get --raw /api/v1/namespaces/default/pods \
   --kubeconfig /dev/null
 {"kind":"PodList","apiVersion":"v1","metadata":{"resourceVersion":"6602"},"items":[]}
 
+controlplane:~$ kubectl config set-credentials adam \
+  --client-certificate=learner.crt \
+  --client-key=learner.key
+User "adam" set.
+
+controlplane:~$ kubectl config set-context adam-context \
+  --cluster=kubernetes \
+  --user=adam \
+  --namespace=default
+Context "adam-context" created.
+
+controlplane:~$ kubectl config use-context adam-context
+Switched to context "adam-context".
+
+controlplane:~$ kubectl config current-context
+adam-context
+
+controlplane:~$ kubectl get pods -n kube-system
+Error from server (Forbidden): pods is forbidden: User "adam" cannot list resource "pods" in API group "" in the namespace "kube-system"
+controlplane:~$
+
 ```
   
 
