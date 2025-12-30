@@ -20,6 +20,69 @@ Note: I am referring the username as `krishna` here in this task but feel free t
 - List the Pods in the namespace. What would you expect to happen?
 - Create a new deploymened named `nginx-deploy`. What would you expect to happen?
 
+```
+controlplane:~$ kubectl auth whoami
+ATTRIBUTE                                           VALUE
+Username                                            kubernetes-admin
+Groups                                              [kubeadm:cluster-admins system:authenticated]
+Extra: authentication.kubernetes.io/credential-id   [X509SHA256=0921345697e413ef20f038443db9b06d4934ba8e7b702bc3b9b0749566e4c0a5]
+
+controlplane:~$ k auth can-i create po --as adam
+no
+
+controlplane:~$ ls
+adam.csr  adam.key  csr-manifest.yaml  filesystem  learner.crt  learner.csr  learner.key
+
+controlplane:~$ cat role.yaml 
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: default
+  name: pod-reader
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["pods"]
+  verbs: ["get", "watch", "list"]
+controlplane:~$ cat rbac.yaml 
+apiVersion: rbac.authorization.k8s.io/v1
+# This role binding allows "jane" to read pods in the "default" namespace.
+# You need to already have a Role named "pod-reader" in that namespace.
+kind: RoleBinding
+metadata:
+  name: read-pods
+  namespace: default
+subjects:
+# You can specify more than one "subject"
+- kind: User
+  name: adam # "name" is case sensitive
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  # "roleRef" specifies the binding to a Role / ClusterRole
+  kind: Role #this must be Role or ClusterRole
+  name: pod-reader # this must match the name of the Role or ClusterRole you wish to bind to
+  apiGroup: rbac.authorization.k8s.io
+
+controlplane:~$ kubectl apply -f role.yaml 
+role.rbac.authorization.k8s.io/pod-reader created
+controlplane:~$ kubectl apply -f rbac.yaml 
+rolebinding.rbac.authorization.k8s.io/read-pods created
+
+controlplane:~$ k auth can-i create po --as adam
+no
+controlplane:~$ kubectl auth can-i list pods --as adam
+yes
+
+controlplane:~$ kubectl get --raw /api/v1/namespaces/default/pods \
+  --server https://172.30.1.2:6443 \
+  --client-certificate=learner.crt \
+  --client-key=learner.key \
+  --insecure-skip-tls-verify \
+  --kubeconfig /dev/null
+{"kind":"PodList","apiVersion":"v1","metadata":{"resourceVersion":"6602"},"items":[]}
+
+```
+  
+
 2. **Share your learnings**: Document your key takeaways and insights in a blog post and social media update
 3. **Make it public**: Share what you learn publicly on LinkedIn or Twitter.
    - **Tag us and use the hashtag**: Include the following in your post:
